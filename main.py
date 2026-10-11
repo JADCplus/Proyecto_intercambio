@@ -5,6 +5,69 @@ usuario_default = "ADMIN"
 password_default = "ADMIN01"
 confirmacion = True
 
+def crear_equipo():
+
+    ventana_crear = tk.Toplevel()
+    ventana_crear.geometry("550x400")
+    ventana_crear.resizable(False, False)
+    ventana_crear.title("Crear Equipo")
+    ventana_crear.transient(ventana_principal)
+    ventana_crear.grab_set()
+
+    try:
+        icono_crear = tk.PhotoImage(file="icono_crear.png")
+        ventana_crear.iconphoto(False, icono_crear)
+        ventana_crear.icono = icono_crear
+    except tk.TclError:
+        pass  # si no existe el icono, sigue sin él
+
+
+    label_titulo = tk.Label(ventana_crear,
+                            text="Crear Equipo",
+                            font=("Times New Roman", 20, "bold"),)
+    label_titulo.place(x=190, y=30)
+
+    label_titulo_codigo = tk.Label(ventana_crear,
+                            text="Codigo: ",
+                            font=("Times New Roman", 15, "bold" ),)
+    label_titulo_codigo.place(x=50, y=100)
+
+    #este label es para que se vaya mostrando el codigo de cada producto
+    label_codigo = tk.Label(ventana_crear,
+                            text="BN101",
+                            font=("Times New Roman", 15, "bold"),
+                            fg="#113EF0")
+    label_codigo.place(x=135, y=100)
+
+    label_nombre_equipo = tk.Label(ventana_crear,
+                                   text="Nombre: ",
+                                   font=("Times New Roman", 15, "bold"),)
+    label_nombre_equipo.place(x=50, y=160)
+
+    entrada_nombre_equipo = tk.Entry(ventana_crear,
+                                     font=("Times New Roman", 13, ""))
+    entrada_nombre_equipo.place(x=135, y=161, width=200, height=30)
+
+    label_titulo_tipo = tk.Label(ventana_crear,
+                                 text="Tipo: ",
+                                 font=("Times New Roman", 15, "bold"),)
+    label_titulo_tipo.place(x=50, y=220)
+
+    listbox_tipo = ttk.Combobox(ventana_crear,
+                                values=[],
+                                font=("Times New Roman", 13),
+                                state="readonly")
+    listbox_tipo.place(x=135, y=221, width=200, height=30)
+
+    boton_guardar = tk.Button(ventana_crear,
+                              text="Guardar",
+                              font=("Times New Roman", 15, "bold"),)
+    boton_guardar.place(x=90, y=300,width=125, height=50)
+
+    boton_cancelar = tk.Button(ventana_crear,
+                               text="Cancelar",
+                               font=("Times New Roman", 15, "bold"),)
+    boton_cancelar.place(x=320, y=300,width=125, height=50)
 
 def login():
     global confirmacion
@@ -82,6 +145,28 @@ if confirmacion:
     icono_ventana_principal = tk.PhotoImage(file="icono_ventana_principal.png")
     ventana_principal.iconphoto(False, icono_ventana_principal)
 
+    #apartado barra de menu
+
+    barra_principal = tk.Menu(ventana_principal)
+    ventana_principal.config(menu=barra_principal)
+
+    menu_opciones_equipo = tk.Menu(barra_principal)
+    barra_principal.add_cascade(label="Equipo", menu=menu_opciones_equipo)
+    menu_opciones_equipo.add_command(label="Crear", command=crear_equipo)
+    menu_opciones_equipo.add_command(label="Editar")
+    menu_opciones_equipo.add_command(label="Eliminar")
+
+    menu_opciones_inventario = tk.Menu(barra_principal)
+    barra_principal.add_cascade(label="Inventario", menu=menu_opciones_inventario)
+    menu_opciones_inventario.add_command(label="Ver Inventario")
+    menu_opciones_inventario.add_command(label="Historial Prestamos")
+
+    menu_ayuda = tk.Menu(barra_principal)
+    barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
+
+
+
+
     label_bienvenido = tk.Label(ventana_principal,
                                 text="!Bienvenido!",
                                 font=("Times New Roman", 25, " bold"))
@@ -109,7 +194,7 @@ if confirmacion:
                                  font=("Times New Roman", 14))
     label_coordinador.place(x=30, y=180)
 
-    entrada_coordinador = tk.Entry(ventana_principal, font=("Calibri", 13),
+    entrada_coordinador = tk.Entry(ventana_principal, font=("Times New Roman", 13),
                                    relief="solid", bd=1)
     entrada_coordinador.insert(0, "Lucas Tebalan")
     entrada_coordinador.config(state="readonly") # esto es para que no se pueda modificar el nombre del coordinador
@@ -120,7 +205,7 @@ if confirmacion:
     label_tipo.place(x=470, y=180)
 
     combo_tipo = ttk.Combobox(ventana_principal, values=["Estudiante", "Docente"],
-                              state="readonly", font=("Calibri", 13))
+                              state="readonly", font=("Times New Roman", 13))
     combo_tipo.current(0) # esto sirve para que se inicie/vea la primera opcion
     combo_tipo.place(x=520, y=175, width=200, height=32)
 
@@ -197,6 +282,7 @@ if confirmacion:
     entrada_fecha_devolucion = tk.Entry(ventana_principal,
                                         font=("Times New Roman", 13))
     entrada_fecha_devolucion.place(x=435, y=490, width=200, height=35)
+
 
 
 
