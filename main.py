@@ -6,6 +6,20 @@ password_default = "ADMIN01"
 confirmacion = True
 
 def crear_equipo():
+    valores_marcas = ["JBL", "Bose", "Sony"]
+    def al_seleccionar(event):
+        global valores_marcas
+        seleccion = listbox_tipo.get()
+        if seleccion == "Bocina":
+            valores_marcas = ["JBL", "Bose", "Sony"]
+        elif seleccion == "Computador portatil":
+            valores_marcas = ["DELL", "Lenovo", "HP"]
+        elif seleccion == "Cámara":
+            valores_marcas = ["Canon", "Sony", "Nikon"]
+        elif seleccion == "Proyector":
+            valores_marcas = ["Optoma", "BenQ", "Epson"]
+        listbox_marca_equipo['values'] = valores_marcas
+        listbox_marca_equipo.set('')
 
     ventana_crear = tk.Toplevel()
     ventana_crear.geometry("550x400")
@@ -43,25 +57,30 @@ def crear_equipo():
                             fg="#113EF0")
     label_codigo.place(x=135, y=100)
 
-    label_nombre_equipo = tk.Label(ventana_crear,
-                                   text="Nombre: ",
-                                   font=("Times New Roman", 15, "bold"),)
-    label_nombre_equipo.place(x=50, y=160)
-
-    entrada_nombre_equipo = tk.Entry(ventana_crear,
-                                     font=("Times New Roman", 13, ""))
-    entrada_nombre_equipo.place(x=135, y=161, width=200, height=30)
-
     label_titulo_tipo = tk.Label(ventana_crear,
                                  text="Tipo: ",
                                  font=("Times New Roman", 15, "bold"),)
-    label_titulo_tipo.place(x=50, y=220)
+    label_titulo_tipo.place(x=50, y=160)
 
     listbox_tipo = ttk.Combobox(ventana_crear,
-                                values=[],
+                                values=["Bocina", "Computador portatil", "Cámara", "Proyector"],
                                 font=("Times New Roman", 13),
                                 state="readonly")
-    listbox_tipo.place(x=135, y=221, width=200, height=30)
+    listbox_tipo.bind("<<ComboboxSelected>>", al_seleccionar)
+    listbox_tipo.place(x=135, y=161, width=200, height=30)
+    listbox_tipo.current(0)
+
+
+    label_marca_equipo = tk.Label(ventana_crear,
+                                   text="Marca: ",
+                                   font=("Times New Roman", 15, "bold"),)
+    label_marca_equipo.place(x=50, y=220)
+
+    listbox_marca_equipo = ttk.Combobox(ventana_crear,
+                                values = valores_marcas,
+                                font=("Times New Roman", 13, ""),
+                                state="readonly")
+    listbox_marca_equipo.place(x=135, y=221, width=200, height=30)
 
     boton_guardar = tk.Button(ventana_crear,
                               text="Guardar",
