@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
+from datetime import date
 
 usuario_default = "ADMIN"
 password_default = "ADMIN01"
@@ -23,6 +24,9 @@ class Equipo:
     @property
     def estado(self):
         return self.__estado
+    @estado.setter
+    def estado(self, estado):
+        self.__estado = estado
 
 inventario_equipos = []
 codigo_equipo = "BC"
@@ -374,7 +378,7 @@ def agregar_carrito(event):
     ya_agregado = False
     for ag in rentas_carrito:
         if codigo == ag.codigo:
-            messagebox.showwarning("Error al agregar", "Ese equipo ya fué agregado al carrito")
+            messagebox.showwarning("Error al agregar", "Ese equipo ya fué agregado al carrito.")
             ya_agregado = True
             break
     if ya_agregado is False:
@@ -391,6 +395,55 @@ def agregar_carrito(event):
                 carrito.itemconfig(producto1, text=texto_carrito)
                 rentas_carrito.append(b)
                 break
+            elif codigo == b.codigo and b.estado is False:
+                messagebox.showwarning("Error al agregar al carrito", "El equipo que intenta agregar al carrito ya se encuentra prestado.")
+def confirmar_prestamo():
+    nuevos_valores = []
+    if len(rentas_carrito) > 0:
+        if entrada_nombre_prestamo.get() == "" or  entrada_carnet.get() == "":
+            messagebox.showwarning("Falta información", "Asegurese de llenar todos los campos de información")
+        else:
+            if len(entrada_carnet.get()) == 8:
+                for i in inventario_equipos:
+                    for r in rentas_carrito:
+                        if r.codigo == i.codigo:
+                            i.estado = False
+                nuevos_valores.clear()
+                for i in inventario_equipos:
+                    if i.tipo == "Bocina":
+                        nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | En uso")
+                opciones_bocina['values'] = nuevos_valores
+                opciones_bocina.set('BOCINA')
+                nuevos_valores.clear()
+                for i in inventario_equipos:
+                    if i.tipo == "Cámara":
+                        nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | En uso")
+                opciones_camara['values'] = nuevos_valores
+                opciones_camara.set('CAMARA')
+                nuevos_valores.clear()
+                for i in inventario_equipos:
+                    if i.tipo == "Proyector":
+                        nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | En uso")
+                opciones_proyector['values'] = nuevos_valores
+                opciones_proyector.set('PROYECTOR')
+                nuevos_valores.clear()
+                for i in inventario_equipos:
+                    if i.tipo == "Computador portatil":
+                        nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | En uso")
+                opciones_portatil['values'] = nuevos_valores
+                opciones_portatil.set('PORTATIL')
+                messagebox.showinfo("Prestamo registrado", "Se realizó el registro del prestamo correctamente.")
+                carrito.itemconfig(producto1, text="Seleccione un equipo")
+                for r in rentas_carrito:
+                    historial_rentas.append(r)
+                rentas_carrito.clear()
+            else:
+                messagebox.showwarning("Dato incompleto", "El carnet debe tener 8 caracteres.")
+    else:
+        messagebox.showwarning("Falta información", "No se ha agregado ningún elemento al carrito.")
+
+def solo_numeros(texto_nuevo):
+  return texto_nuevo == "" or texto_nuevo.isdigit()
 
 if confirmacion:
     ventana_principal = tk.Tk()
@@ -399,6 +452,8 @@ if confirmacion:
     ventana_principal.resizable(False, False)
     icono_ventana_principal = tk.PhotoImage(file="icono_ventana_principal.png")
     ventana_principal.iconphoto(False, icono_ventana_principal)
+
+    vcmd =ventana_principal.register(solo_numeros)
 
     #apartado barra de menu
 
@@ -439,7 +494,7 @@ if confirmacion:
     label_carnet.place(x=560, y=125)
 
     entrada_carnet = tk.Entry(ventana_principal, font=("Times New Roman", 13),
-                              relief="solid", bd=1)
+                              relief="solid", bd=1,validate="key", validatecommand=(vcmd, "%P"))
     entrada_carnet.place(x=625, y=120, width=250, height=32)
 
     label_coordinador = tk.Label(ventana_principal, text="Coordinador:",
@@ -510,7 +565,8 @@ if confirmacion:
     boton_prestamo = tk.Button(ventana_principal,
                               text="Guardar \nPrestamo",
                               font=("Times New Roman", 14),
-                              bg="#10B251",)
+                              bg="#10B251",
+                               command = confirmar_prestamo)
     boton_prestamo.place(x=745, y=525, width=110, height=50)
 
     boton_limpiar = tk.Button(ventana_principal,
@@ -527,9 +583,10 @@ if confirmacion:
                                     )
     label_fecha_prestamo.place(x=80, y=460)
 
-    entrada_fecha_prestamo = tk.Entry(ventana_principal,
+    label_fecha_hoy = tk.Label(ventana_principal,
+                               text = date.today().strftime("%d/%m/%Y"),
                                       font=("Times New Roman", 13))
-    entrada_fecha_prestamo.place(x=65, y=490, width=200, height=35)
+    label_fecha_hoy.place(x=65, y=490, width=200, height=35)
 
     label_fecha_devolucion = tk.Label(ventana_principal,
                                       text="Fecha de Devolucion",
