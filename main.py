@@ -6,10 +6,11 @@ password_default = "ADMIN01"
 confirmacion = True
 
 class Equipo:
-    def __init__(self, codigo, tipo, marca):
+    def __init__(self, codigo, tipo, marca, estado):
         self.__codigo = codigo
         self.__tipo = tipo
         self.__marca = marca
+        self.__estado = estado
     @property
     def codigo(self):
         return self.__codigo
@@ -19,12 +20,14 @@ class Equipo:
     @property
     def marca(self):
         return self.__marca
+    @property
+    def estado(self):
+        return self.__estado
 
 inventario_equipos = []
-valores_camara = []
 codigo_equipo = "BC"
 
-def crear_equipo(ventana, combo):
+def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
     global codigo_equipo
     codigo_equipo = "BC"
     valores_marcas = ["JBL", "Bose", "Sony"]
@@ -55,14 +58,26 @@ def crear_equipo(ventana, combo):
         codigo_equipo = codigo_equipo + str(numero_codigo)
         label_codigo.config(text=codigo_equipo)
     def guardar_eqipo():
-        global codigo_equipo, valores_camara
+        global codigo_equipo
         if listbox_marca_equipo.get() != "":
-            equip = Equipo(codigo_equipo, listbox_tipo.get(),listbox_marca_equipo.get())
+            equip = Equipo(codigo_equipo, listbox_tipo.get(),listbox_marca_equipo.get(), True)
             inventario_equipos.append(equip)
-            valores_actuales = list(combo['values'])
             if listbox_tipo.get() == "Cámara":
-                valores_actuales.append(f"Código {codigo_equipo} | Marca: {listbox_marca_equipo.get()}")
-                combo['values'] = valores_actuales
+                valores_actuales = list(comboCamara['values'])
+                valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
+                comboCamara['values'] = valores_actuales
+            elif listbox_tipo.get() == "Computador portatil":
+                valores_actuales = list(comboCompu['values'])
+                valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
+                comboCompu['values'] = valores_actuales
+            elif listbox_tipo.get() == "Proyector":
+                valores_actuales = list(comboProyec['values'])
+                valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
+                comboProyec['values'] = valores_actuales
+            elif listbox_tipo.get() == "Bocina":
+                valores_actuales = list(comboBocina['values'])
+                valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
+                comboBocina['values'] = valores_actuales
 
     ventana_crear = tk.Toplevel()
     ventana_crear.geometry("550x400")
@@ -275,9 +290,7 @@ def eliminar_equipo():
 
 
 def login():
-    global confirmacion, valores_camara
-    def agregaracombo(self,agr):
-        valores_camara.append(agr)
+    global confirmacion
     def verificar_datos():
         global confirmacion
         usuario = entrada_usuario.get().strip().upper()
@@ -343,6 +356,28 @@ def login():
 
 #login()
 
+rentas_carrito= []
+
+def agregar_carrito(event):
+    combo_activo = event.widget
+    contador = 0
+    codigo = ""
+    seleccion = combo_activo.get()
+    while contador < 5:
+        codigo = codigo + seleccion[contador]
+        contador += 1
+    for b in inventario_equipos:
+        if codigo == b.codigo and b.estado is True:
+            if b.tipo == "Bocina":
+                carrito.itemconfig(producto1, text=f"{b.codigo} | Bocina {b.marca}")
+            elif b.tipo == "Cámara":
+                carrito.itemconfig(producto1, text=f"{b.codigo} | Cámara {b.marca}")
+            elif b.tipo == "Computador portatil":
+                carrito.itemconfig(producto1, text=f"{b.codigo} | Portatil {b.marca}")
+            elif b.tipo == "Proyector":
+                carrito.itemconfig(producto1, text=f"{b.codigo} | Proyector {b.marca}")
+            break
+
 if confirmacion:
     ventana_principal = tk.Tk()
     ventana_principal.title("Ventana Principal")
@@ -358,7 +393,7 @@ if confirmacion:
 
     menu_opciones_equipo = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Equipo", menu=menu_opciones_equipo)
-    menu_opciones_equipo.add_command(label="Crear", command=lambda:crear_equipo(ventana_principal, opciones_camara))
+    menu_opciones_equipo.add_command(label="Crear", command=lambda:crear_equipo(ventana_principal, opciones_camara, opciones_proyector, opciones_bocina, opciones_portatil))
     menu_opciones_equipo.add_command(label="Editar", command=editar_equipo)
     menu_opciones_equipo.add_command(label="Eliminar", command=eliminar_equipo)
 
@@ -371,7 +406,7 @@ if confirmacion:
     barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
 
     label_bienvenido = tk.Label(ventana_principal,
-                                text="!Bienvenido!",
+                                text="¡Bienvenido!",
                                 font=("Times New Roman", 25, " bold"))
     label_bienvenido.place(x=400, y=30)
 
@@ -416,29 +451,34 @@ if confirmacion:
              text="Selecciona que desea Prestar: ",
              font=("Times New Roman", 17, "bold"),).place(x=30, y=230)
 
-    opciones_bocina = ttk.Combobox(ventana_principal, values=["bocina"], state="readonly",
+    opciones_bocina = ttk.Combobox(ventana_principal, values=[], state="readonly",
                          font=("Times New Roman", 14),
                          )
     opciones_bocina.set("BOCINAS")
     opciones_bocina.place(x=30, y=300, width=300, height=40)
 
     opciones_portatil = ttk.Combobox(ventana_principal,
-                                     values=["portatil"], state="readonly",
+                                     values=[], state="readonly",
                                      font=("Times New Roman", 14),)
     opciones_portatil.set("PORTATIL")
     opciones_portatil.place(x=30, y=380, width=300, height=40)
 
     opciones_camara = ttk.Combobox(ventana_principal,
-                                   values=valores_camara, state="readonly",
+                                   values=[], state="readonly",
                                    font=("Times New Roman", 14),)
     opciones_camara.set("CAMARA")
     opciones_camara.place(x=400, y=300, width=300, height=40)
 
     opciones_proyector = ttk.Combobox(ventana_principal,
-                                      values=["proyector"], state="readonly",
+                                      values=[], state="readonly",
                                       font=("Times New Roman", 14),)
-    opciones_proyector.set("PROYECTO")
+    opciones_proyector.set("PROYECTOR")
     opciones_proyector.place(x=400, y=380, width=300, height=40)
+
+    opciones_bocina.bind("<<ComboboxSelected>>", agregar_carrito)
+    opciones_proyector.bind("<<ComboboxSelected>>", agregar_carrito)
+    opciones_camara.bind("<<ComboboxSelected>>", agregar_carrito)
+    opciones_portatil.bind("<<ComboboxSelected>>", agregar_carrito)
 
     #Cuadro del carrito de prestamos y botones de prestamos
 
@@ -450,6 +490,7 @@ if confirmacion:
              bg="#DB9927").place(x=8, y=8)
     tk.Label(carrito, text="Carrito de\nPrestamo:", font=("#DB9927", 11, "bold"),
              bg="#DB9927", justify="left").place(x=62, y=12)
+    producto1 = carrito.create_text(90,80,text="jsjs",font=("#DB9927", 11, "bold"),justify="left")
     carrito.place(x=745, y=170)
 
     boton_prestamo = tk.Button(ventana_principal,
@@ -485,8 +526,5 @@ if confirmacion:
     entrada_fecha_devolucion = tk.Entry(ventana_principal,
                                         font=("Times New Roman", 13))
     entrada_fecha_devolucion.place(x=435, y=490, width=200, height=35)
-
-
-
 
     ventana_principal.mainloop()
