@@ -410,37 +410,51 @@ def confirmar_prestamo():
                             i.estado = False
                 nuevos_valores.clear()
                 for i in inventario_equipos:
-                    if i.tipo == "Bocina":
+                    if i.tipo == "Bocina" and i.estado is False:
                         nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | En uso")
+                    elif i.tipo == "Bocina" and i.estado is True:
+                        nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | Disponible")
                 opciones_bocina['values'] = nuevos_valores
-                opciones_bocina.set('BOCINA')
                 nuevos_valores.clear()
                 for i in inventario_equipos:
-                    if i.tipo == "Cámara":
+                    if i.tipo == "Cámara" and i.estado is False:
                         nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | En uso")
+                    elif i.tipo == "Cámara" and i.estado is True:
+                        nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | Disponible")
                 opciones_camara['values'] = nuevos_valores
-                opciones_camara.set('CAMARA')
                 nuevos_valores.clear()
                 for i in inventario_equipos:
-                    if i.tipo == "Proyector":
+                    if i.tipo == "Proyector" and i.estado is False:
                         nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | En uso")
+                    elif i.tipo == "Proyector" and i.estado is True:
+                        nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | Disponible")
                 opciones_proyector['values'] = nuevos_valores
-                opciones_proyector.set('PROYECTOR')
                 nuevos_valores.clear()
                 for i in inventario_equipos:
-                    if i.tipo == "Computador portatil":
+                    if i.tipo == "Computador portatil" and i.estado is False:
                         nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | En uso")
+                    elif i.tipo == "Computador portatil" and i.estado is True:
+                        nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | Disponible")
                 opciones_portatil['values'] = nuevos_valores
-                opciones_portatil.set('PORTATIL')
                 messagebox.showinfo("Prestamo registrado", "Se realizó el registro del prestamo correctamente.")
-                carrito.itemconfig(producto1, text="Seleccione un equipo")
                 for r in rentas_carrito:
                     historial_rentas.append(r)
-                rentas_carrito.clear()
+                limpiar_prestamo()
             else:
                 messagebox.showwarning("Dato incompleto", "El carnet debe tener 8 caracteres.")
     else:
         messagebox.showwarning("Falta información", "No se ha agregado ningún elemento al carrito.")
+def limpiar_prestamo():
+    global texto_carrito
+    texto_carrito=""
+    carrito.itemconfig(producto1, text="Seleccione un equipo")
+    opciones_bocina.set('BOCINAS')
+    opciones_camara.set('CAMARA')
+    opciones_proyector.set('PROYECTOR')
+    opciones_portatil.set('PORTATIL')
+    entrada_nombre_prestamo.delete(0, tk.END)
+    entrada_carnet.delete(0, tk.END)
+    rentas_carrito.clear()
 
 def solo_numeros(texto_nuevo):
   return texto_nuevo == "" or texto_nuevo.isdigit()
@@ -572,7 +586,8 @@ if confirmacion:
     boton_limpiar = tk.Button(ventana_principal,
                               text="Limpiar \nCarrito",
                               font=("Times New Roman", 14),
-                              bg="#1066B2",)
+                              bg="#1066B2",
+                              command = limpiar_prestamo)
     boton_limpiar.place(x=875, y=525, width=110, height=50)
 
     #Apartado de fechas prestamos y devolucion
