@@ -355,8 +355,11 @@ def login():
 #login()
 
 rentas_carrito= []
+historial_rentas=[]
+texto_carrito = ""
 
 def agregar_carrito(event):
+    global texto_carrito
     combo_activo = event.widget
     contador = 0
     codigo = ""
@@ -367,13 +370,15 @@ def agregar_carrito(event):
     for b in inventario_equipos:
         if codigo == b.codigo and b.estado is True:
             if b.tipo == "Bocina":
-                carrito.itemconfig(producto1, text=f"{b.codigo} | Bocina {b.marca}")
+                texto_carrito+=f"\n{b.codigo} | Bocina {b.marca}"
             elif b.tipo == "Cámara":
-                carrito.itemconfig(producto1, text=f"{b.codigo} | Cámara {b.marca}")
+                texto_carrito+=f"\n{b.codigo} | Cámara {b.marca}"
             elif b.tipo == "Computador portatil":
-                carrito.itemconfig(producto1, text=f"{b.codigo} | Portatil {b.marca}")
+                texto_carrito+=f"\n{b.codigo} | Portatil {b.marca}"
             elif b.tipo == "Proyector":
-                carrito.itemconfig(producto1, text=f"{b.codigo} | Proyector {b.marca}")
+                texto_carrito+=f"\n{b.codigo} | Proyector {b.marca}"
+            carrito.itemconfig(producto1,text = texto_carrito)
+            rentas_carrito.append(b)
             break
 
 if confirmacion:
@@ -488,7 +493,7 @@ if confirmacion:
              bg="#DB9927").place(x=8, y=8)
     tk.Label(carrito, text="Carrito de\nPrestamo:", font=("#DB9927", 11, "bold"),
              bg="#DB9927", justify="left").place(x=62, y=12)
-    producto1 = carrito.create_text(90,80,text="jsjs",font=("#DB9927", 11, "bold"),justify="left")
+    producto1 = carrito.create_text(100,70,text="Seleccione un equipo",font=("#DB9927", 11, "bold"),anchor = 'n',justify="left")
     carrito.place(x=745, y=170)
 
     boton_prestamo = tk.Button(ventana_principal,
