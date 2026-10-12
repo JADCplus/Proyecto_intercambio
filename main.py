@@ -148,30 +148,31 @@ def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
 
     boton_cancelar = tk.Button(ventana_crear,
                                text="Cancelar",
-                               font=("Times New Roman", 15, "bold"),)
+                               font=("Times New Roman", 15, "bold"),
+                               command=ventana_crear.destroy)
     boton_cancelar.place(x=320, y=300,width=125, height=50)
 
     verificar_codigo(listbox_tipo.get())
 
-def editar_equipo():
+def devolver_equipo():
 
-    ventana_editar = tk.Toplevel()
-    ventana_editar.geometry("550x400")
-    ventana_editar.resizable(False, False)
-    ventana_editar.title("Editar Equipo")
-    ventana_editar.transient(ventana_principal)
-    ventana_editar.grab_set()
+    ventana_devolver = tk.Toplevel()
+    ventana_devolver.geometry("550x400")
+    ventana_devolver.resizable(False, False)
+    ventana_devolver.title("Devolver Equipo")
+    ventana_devolver.transient(ventana_principal)
+    ventana_devolver.grab_set()
 
     try:
-        icono_editar = tk.PhotoImage(file="icono_editar.png")
-        ventana_editar.iconphoto(False, icono_editar)
-        ventana_editar.icono = icono_editar
+        icono_devolver = tk.PhotoImage(file="icono_devolver.png")
+        ventana_devolver.iconphoto(False, icono_devolver)
+        ventana_devolver.icono = icono_devolver
     except tk.TclError:
         pass  # si no existe el icono, sigue sin él
 
 
-    label_titulo = tk.Label(ventana_editar,
-                            text="Editar Equipo",
+    label_titulo = tk.Label(ventana_devolver,
+                            text="Devolver Equipo",
                             font=("Times New Roman", 20, "bold"),
                             fg="white",
                             bg="#CC2B2B",
@@ -179,53 +180,38 @@ def editar_equipo():
                             )
     label_titulo.place(x=190, y=30)
 
-    label_titulo_codigo = tk.Label(ventana_editar,
+    label_titulo_codigo = tk.Label(ventana_devolver,
                             text="Tipo: ",
                             font=("Times New Roman", 15, "bold" ),)
-    label_titulo_codigo.place(x=50, y=100)
+    label_titulo_codigo.place(x=50, y=125)
 
-    listbox_tipo = ttk.Combobox(ventana_editar,
+    listbox_tipo = ttk.Combobox(ventana_devolver,
                                 values=[],
                                 font=("Times New Roman", 13),
                                 state="readonly")
-    listbox_tipo.place(x=135, y=100, width=200, height=30)
+    listbox_tipo.place(x=135, y=125, width=200, height=30)
 
-    label_equipo = tk.Label(ventana_editar,
+    label_equipo = tk.Label(ventana_devolver,
                             text="Equipo: ",
                             font=("Times New Roman", 15, "bold"),)
-    label_equipo.place(x=50, y=160)
+    label_equipo.place(x=50, y=205)
 
-    listbox_equipo = ttk.Combobox(ventana_editar,
+    listbox_equipo = ttk.Combobox(ventana_devolver,
                                 values=[],
                                 font=("Times New Roman", 13),
                                 state="readonly")
-    listbox_equipo.place(x=135, y=161, width=200, height=30)
-
-    label_nombre_equipo = tk.Label(ventana_editar,
-                                   text="Nuevo \nNombre: ",
-                                   font=("Times New Roman", 15, "bold"),)
-    label_nombre_equipo.place(x=50, y=210)
+    listbox_equipo.place(x=135, y=205, width=200, height=30)
 
 
-    entrada_nombre_equipo = ttk.Entry(ventana_editar,
-                                font=("Times New Roman", 13),
-                                )
-    entrada_nombre_equipo.place(x=135, y=221, width=200, height=30)
+    boton_devolver = tk.Button(ventana_devolver,
+                              text="Devolver",
+                              font=("Times New Roman", 15, "bold"),)
+    boton_devolver.place(x=115, y=290,width=100, height=50)
 
-    boton_filtrar = tk.Button(ventana_editar,
-                              text="Filtrar",
-                              font=("Times New Roman", 15, "bold"), )
-    boton_filtrar.place(x=60, y=310, width=85, height=35)
-
-    boton_guardar = tk.Button(ventana_editar,
-                              text="Guardar \nCambios",
-                              font=("Times New Roman", 11, "bold"),)
-    boton_guardar.place(x=240, y=310,width=85, height=35)
-
-    boton_limpiar_campos = tk.Button(ventana_editar,
+    boton_limpiar_campos = tk.Button(ventana_devolver,
                                text="Limpiar",
                                font=("Times New Roman", 15, "bold"),)
-    boton_limpiar_campos.place(x=400, y=310,width=85, height=35)
+    boton_limpiar_campos.place(x=300, y=290,width=100, height=50)
 
 
 def eliminar_equipo():
@@ -263,13 +249,25 @@ def eliminar_equipo():
                                 state="readonly")
     listbox_tipo.place(x=115, y=100, width=235, height=30)
 
+    label_equipo = tk.Label(ventana_eliminar,
+                            text="Seleccione \nEquipo: ",
+                            font=("Times New Roman", 12, "bold"),
+                            )
+    label_equipo.place(x=35,  y=185)
+
+    listbox_equipo = ttk.Combobox(ventana_eliminar,
+                                  values=[],
+                                  font=("Times New Roman", 13),
+                                  state="readonly")
+    listbox_equipo.place(x=115, y=190, width=235, height=30)
+
     boton_filtrar = tk.Button(ventana_eliminar,
                               text="Filtrar",
                               font=("Times New Roman", 15, "bold"), )
     boton_filtrar.place(x=410, y=95, width=85, height=35)
 
     boton_eliminar = tk.Button(ventana_eliminar,
-                               text="Cancelar",
+                               text="Eliminar",
                                font=("Times New Roman", 15, "bold"), )
     boton_eliminar.place(x=410, y=200, width=85, height=35)
 
@@ -394,7 +392,7 @@ if confirmacion:
     menu_opciones_equipo = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Equipo", menu=menu_opciones_equipo)
     menu_opciones_equipo.add_command(label="Crear", command=lambda:crear_equipo(ventana_principal, opciones_camara, opciones_proyector, opciones_bocina, opciones_portatil))
-    menu_opciones_equipo.add_command(label="Editar", command=editar_equipo)
+    menu_opciones_equipo.add_command(label="Devolver", command=devolver_equipo)
     menu_opciones_equipo.add_command(label="Eliminar", command=eliminar_equipo)
 
     menu_opciones_inventario = tk.Menu(barra_principal)
