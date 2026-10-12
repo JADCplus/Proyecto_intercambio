@@ -5,21 +5,64 @@ usuario_default = "ADMIN"
 password_default = "ADMIN01"
 confirmacion = True
 
-def crear_equipo():
+class Equipo:
+    def __init__(self, codigo, tipo, marca):
+        self.__codigo = codigo
+        self.__tipo = tipo
+        self.__marca = marca
+    @property
+    def codigo(self):
+        return self.__codigo
+    @property
+    def tipo(self):
+        return self.__tipo
+    @property
+    def marca(self):
+        return self.__marca
+
+inventario_equipos = []
+valores_camara = []
+codigo_equipo = "BC"
+
+def crear_equipo(ventana, combo):
+    global codigo_equipo
+    codigo_equipo = "BC"
     valores_marcas = ["JBL", "Bose", "Sony"]
     def al_seleccionar(event):
-        global valores_marcas
+        global valores_marcas, codigo_equipo
         seleccion = listbox_tipo.get()
         if seleccion == "Bocina":
             valores_marcas = ["JBL", "Bose", "Sony"]
+            codigo_equipo = "BC"
         elif seleccion == "Computador portatil":
             valores_marcas = ["DELL", "Lenovo", "HP"]
+            codigo_equipo = "CP"
         elif seleccion == "Cámara":
             valores_marcas = ["Canon", "Sony", "Nikon"]
+            codigo_equipo = "CM"
         elif seleccion == "Proyector":
             valores_marcas = ["Optoma", "BenQ", "Epson"]
+            codigo_equipo = "PY"
         listbox_marca_equipo['values'] = valores_marcas
         listbox_marca_equipo.set('')
+        verificar_codigo(seleccion)
+    def verificar_codigo(tipo):
+        global codigo_equipo
+        numero_codigo = 100
+        for e in inventario_equipos:
+            if e.tipo == tipo:
+                numero_codigo += 1
+        codigo_equipo = codigo_equipo + str(numero_codigo)
+        label_codigo.config(text=codigo_equipo)
+    def guardar_eqipo():
+        global codigo_equipo, valores_camara
+        if listbox_marca_equipo.get() != "":
+            equip = Equipo(codigo_equipo, listbox_tipo.get(),listbox_marca_equipo.get())
+            inventario_equipos.append(equip)
+            valores_actuales = list(combo['values'])
+            if listbox_tipo.get() == "Cámara":
+                valores_actuales.append(f"Código {codigo_equipo} | Marca: {listbox_marca_equipo.get()}")
+                combo['values'] = valores_actuales
 
     ventana_crear = tk.Toplevel()
     ventana_crear.geometry("550x400")
@@ -52,7 +95,7 @@ def crear_equipo():
 
     #este label es para que se vaya mostrando el codigo de cada producto
     label_codigo = tk.Label(ventana_crear,
-                            text="BN101",
+                            text="BC100",
                             font=("Times New Roman", 15, "bold"),
                             fg="#113EF0")
     label_codigo.place(x=135, y=100)
@@ -84,13 +127,16 @@ def crear_equipo():
 
     boton_guardar = tk.Button(ventana_crear,
                               text="Guardar",
-                              font=("Times New Roman", 15, "bold"),)
+                              font=("Times New Roman", 15, "bold"),
+                              command = guardar_eqipo)
     boton_guardar.place(x=90, y=300,width=125, height=50)
 
     boton_cancelar = tk.Button(ventana_crear,
                                text="Cancelar",
                                font=("Times New Roman", 15, "bold"),)
     boton_cancelar.place(x=320, y=300,width=125, height=50)
+
+    verificar_codigo(listbox_tipo.get())
 
 def editar_equipo():
 
@@ -229,8 +275,9 @@ def eliminar_equipo():
 
 
 def login():
-    global confirmacion
-
+    global confirmacion, valores_camara
+    def agregaracombo(self,agr):
+        valores_camara.append(agr)
     def verificar_datos():
         global confirmacion
         usuario = entrada_usuario.get().strip().upper()
@@ -311,7 +358,7 @@ if confirmacion:
 
     menu_opciones_equipo = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Equipo", menu=menu_opciones_equipo)
-    menu_opciones_equipo.add_command(label="Crear", command=crear_equipo)
+    menu_opciones_equipo.add_command(label="Crear", command=lambda:crear_equipo(ventana_principal, opciones_camara))
     menu_opciones_equipo.add_command(label="Editar", command=editar_equipo)
     menu_opciones_equipo.add_command(label="Eliminar", command=eliminar_equipo)
 
@@ -322,9 +369,6 @@ if confirmacion:
 
     menu_ayuda = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
-
-
-
 
     label_bienvenido = tk.Label(ventana_principal,
                                 text="!Bienvenido!",
@@ -385,7 +429,7 @@ if confirmacion:
     opciones_portatil.place(x=30, y=380, width=300, height=40)
 
     opciones_camara = ttk.Combobox(ventana_principal,
-                                   values=["camara"], state="readonly",
+                                   values=valores_camara, state="readonly",
                                    font=("Times New Roman", 14),)
     opciones_camara.set("CAMARA")
     opciones_camara.place(x=400, y=300, width=300, height=40)
