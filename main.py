@@ -78,6 +78,10 @@ def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
                 valores_actuales = list(comboBocina['values'])
                 valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
                 comboBocina['values'] = valores_actuales
+            messagebox.showinfo("Registro exitoso",f"El equipo se ha registrado correctamente.\nCódigo: {codigo_equipo}", parent = ventana_crear)
+            ventana_crear.destroy()
+        else:
+            messagebox.showwarning("Error de registro",f"Asegurese de seleccionar la marca.", parent = ventana_crear)
 
     ventana_crear = tk.Toplevel()
     ventana_crear.geometry("550x400")
@@ -367,19 +371,26 @@ def agregar_carrito(event):
     while contador < 5:
         codigo = codigo + seleccion[contador]
         contador += 1
-    for b in inventario_equipos:
-        if codigo == b.codigo and b.estado is True:
-            if b.tipo == "Bocina":
-                texto_carrito+=f"\n{b.codigo} | Bocina {b.marca}"
-            elif b.tipo == "Cámara":
-                texto_carrito+=f"\n{b.codigo} | Cámara {b.marca}"
-            elif b.tipo == "Computador portatil":
-                texto_carrito+=f"\n{b.codigo} | Portatil {b.marca}"
-            elif b.tipo == "Proyector":
-                texto_carrito+=f"\n{b.codigo} | Proyector {b.marca}"
-            carrito.itemconfig(producto1,text = texto_carrito)
-            rentas_carrito.append(b)
+    ya_agregado = False
+    for ag in rentas_carrito:
+        if codigo == ag.codigo:
+            messagebox.showwarning("Error al agregar", "Ese equipo ya fué agregado al carrito")
+            ya_agregado = True
             break
+    if ya_agregado is False:
+        for b in inventario_equipos:
+            if codigo == b.codigo and b.estado is True:
+                if b.tipo == "Bocina":
+                    texto_carrito += f"■ {b.codigo} | Bocina {b.marca}\n"
+                elif b.tipo == "Cámara":
+                    texto_carrito += f"■ {b.codigo} | Cámara {b.marca}\n"
+                elif b.tipo == "Computador portatil":
+                    texto_carrito += f"■ {b.codigo} | Portatil {b.marca}\n"
+                elif b.tipo == "Proyector":
+                    texto_carrito += f"■ {b.codigo} | Proyector {b.marca}\n"
+                carrito.itemconfig(producto1, text=texto_carrito)
+                rentas_carrito.append(b)
+                break
 
 if confirmacion:
     ventana_principal = tk.Tk()
@@ -493,7 +504,7 @@ if confirmacion:
              bg="#DB9927").place(x=8, y=8)
     tk.Label(carrito, text="Carrito de\nPrestamo:", font=("#DB9927", 11, "bold"),
              bg="#DB9927", justify="left").place(x=62, y=12)
-    producto1 = carrito.create_text(100,70,text="Seleccione un equipo",font=("#DB9927", 11, "bold"),anchor = 'n',justify="left")
+    producto1 = carrito.create_text(110,70,text="Seleccione un equipo",font=("#DB9927", 11, "bold"),anchor = 'n',justify="left")
     carrito.place(x=745, y=170)
 
     boton_prestamo = tk.Button(ventana_principal,
