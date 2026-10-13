@@ -271,7 +271,6 @@ def devolver_equipo():
                                command = ventana_devolver.destroy)
     boton_cancelar.place(x=300, y=290,width=100, height=50)
 
-
 def eliminar_equipo():
     valores_inventario = []
     def al_seleccionar(event):
@@ -391,6 +390,50 @@ def eliminar_equipo():
                                 font=("Times New Roman", 10))
     entrada_busqueda.place(x=165, y=325, width=150)
 
+def ver_inventario():
+    global numero_bocinas,numero_camaras,numero_proyectores,numero_portatiles
+    posy = 70
+    def desplegar(tipo):
+        nonlocal posy
+        texto_margen = "╔════════════════════════════════════════════╗\n"
+        for proy in inventario_equipos:
+            if proy.tipo == tipo:
+                texto_margen += "║                                                                                                       ║\n"
+        texto_margen += "╚════════════════════════════════════════════╝\n"
+        label_margen = tk.Label(ventana_inventario, text=texto_margen, font=("arial", 15))
+        label_margen.place(x=35, y=posy)
+        posy += 25
+        for proy in inventario_equipos:
+            if proy.tipo == tipo:
+                if proy.estado is True:
+                    label_info = tk.Label(ventana_inventario,
+                                          text=f"{proy.codigo}       | {proy.tipo} {proy.marca}      | Disponible",
+                                          font=("arial", 12))
+                    label_info.place(x=150, y=posy)
+                else:
+                    label_info = tk.Label(ventana_inventario,
+                                          text=f"{proy.codigo}       | {proy.tipo} {proy.marca}      | En uso",
+                                          font=("arial", 12))
+                    label_info.place(x=150, y=posy)
+                posy += 23
+        posy += 30
+    ventana_inventario = tk.Toplevel()
+    ventana_inventario.geometry("750x750")
+    ventana_inventario.resizable(False, False)
+    ventana_inventario.title("Inventario")
+    ventana_inventario.transient(ventana_principal)
+    ventana_inventario.grab_set()
+
+    label_inventario = tk.Label(ventana_inventario,text="Inventario",font=("Times New Roman", 25))
+    label_inventario.place(x=300, y=30)
+    if numero_proyectores>=100:
+        desplegar("Proyector")
+    if numero_bocinas>=100:
+        desplegar("Bocina")
+    if numero_camaras>=100:
+        desplegar("Cámara")
+    if numero_portatiles>=100:
+        desplegar("Computador portatil")
 
 def login():
     global confirmacion
@@ -582,7 +625,7 @@ if confirmacion:
 
     menu_opciones_inventario = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Inventario", menu=menu_opciones_inventario)
-    menu_opciones_inventario.add_command(label="Ver Inventario")
+    menu_opciones_inventario.add_command(label="Ver Inventario", command = ver_inventario)
     menu_opciones_inventario.add_command(label="Historial Prestamos")
 
     menu_ayuda = tk.Menu(barra_principal)
