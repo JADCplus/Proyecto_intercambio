@@ -4,7 +4,7 @@ from datetime import date
 
 usuario_default = "ADMIN"
 password_default = "ADMIN01"
-confirmacion = True
+confirmacion = False
 
 class Equipo:
     def __init__(self, codigo, tipo, marca, estado):
@@ -582,7 +582,7 @@ def login():
     ventana_login.mainloop()
 
 
-#login()
+login()
 
 def agregar_carrito(event):
     global texto_carrito
@@ -754,18 +754,18 @@ if confirmacion:
     barra_principal = tk.Menu(ventana_principal)
     ventana_principal.config(menu=barra_principal)
 
-    menu_opciones_equipo = tk.Menu(barra_principal)
+    menu_opciones_equipo = tk.Menu(barra_principal, tearoff=0)
     barra_principal.add_cascade(label="Equipo", menu=menu_opciones_equipo)
     menu_opciones_equipo.add_command(label="Crear", command=lambda:crear_equipo(ventana_principal, opciones_camara, opciones_proyector, opciones_bocina, opciones_portatil))
     menu_opciones_equipo.add_command(label="Devolver", command=devolver_equipo)
     menu_opciones_equipo.add_command(label="Eliminar", command=eliminar_equipo)
 
-    menu_opciones_inventario = tk.Menu(barra_principal)
+    menu_opciones_inventario = tk.Menu(barra_principal, tearoff=0)
     barra_principal.add_cascade(label="Inventario", menu=menu_opciones_inventario)
     menu_opciones_inventario.add_command(label="Ver Inventario", command = ver_inventario)
-    menu_opciones_inventario.add_command(label="Historial Prestamos", command = ver_historial_prestamos)
+    #menu_opciones_inventario.add_command(label="Historial Prestamos", command = ver_historial_prestamos)
 
-    menu_ayuda = tk.Menu(barra_principal)
+    menu_ayuda = tk.Menu(barra_principal, tearoff=0)
     barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
 
     menu_ayuda.add_command(label="Creditos",command=creditos)
