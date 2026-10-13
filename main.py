@@ -180,20 +180,25 @@ def devolver_equipo():
         codigo = ""
         contador = 0
         equipo_seleccionado = listbox_equipo.get()
-        while contador < 5:
-            codigo = codigo + equipo_seleccionado[contador]
-            contador += 1
-        encontrado = False
-        for act in actualmente_rentados:
-            if codigo == act.codigo:
-                encontrado = True
-                actualmente_rentados.remove(act)
-                break
-        if encontrado:
-            for inven in inventario_equipos:
-                if codigo == inven.codigo:
-                    inven.estado = True
-            resetear_combos_principales()
+        if listbox_equipo.get() != "":
+            while contador < 5:
+                codigo = codigo + equipo_seleccionado[contador]
+                contador += 1
+            encontrado = False
+            for act in actualmente_rentados:
+                if codigo == act.codigo:
+                    encontrado = True
+                    actualmente_rentados.remove(act)
+                    break
+            if encontrado:
+                for inven in inventario_equipos:
+                    if codigo == inven.codigo:
+                        inven.estado = True
+                resetear_combos_principales()
+                messagebox.showinfo("Devolución registrada", "Se ha registrado la devolución del equipo.")
+                ventana_devolver.destroy()
+        else:
+            messagebox.showwarning("Error al devolver", "No se ha seleccionado ningún equipo para devolver.")
 
     ventana_devolver = tk.Toplevel()
     ventana_devolver.geometry("550x400")
@@ -242,17 +247,17 @@ def devolver_equipo():
                                 state="readonly")
     listbox_equipo.place(x=135, y=205, width=200, height=30)
 
-
     boton_devolver = tk.Button(ventana_devolver,
                               text="Devolver",
                               font=("Times New Roman", 15, "bold"),
                                command= confirmar_devolucion)
     boton_devolver.place(x=115, y=290,width=100, height=50)
 
-    boton_limpiar_campos = tk.Button(ventana_devolver,
-                               text="Limpiar",
-                               font=("Times New Roman", 15, "bold"),)
-    boton_limpiar_campos.place(x=300, y=290,width=100, height=50)
+    boton_cancelar = tk.Button(ventana_devolver,
+                               text="Cancelar",
+                               font=("Times New Roman", 15, "bold"),
+                               command = ventana_devolver.destroy)
+    boton_cancelar.place(x=300, y=290,width=100, height=50)
 
 
 def eliminar_equipo():
