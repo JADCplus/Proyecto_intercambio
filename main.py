@@ -34,6 +34,10 @@ rentas_carrito= []
 historial_rentas=[]
 actualmente_rentados=[]
 texto_carrito = ""
+numero_bocinas = 99
+numero_camaras = 99
+numero_proyectores = 99
+numero_portatiles=99
 
 def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
     global codigo_equipo
@@ -57,16 +61,20 @@ def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
         listbox_marca_equipo['values'] = valores_marcas
         listbox_marca_equipo.set('')
         verificar_codigo(seleccion)
+
     def verificar_codigo(tipo):
         global codigo_equipo
-        numero_codigo = 100
-        for e in inventario_equipos:
-            if e.tipo == tipo:
-                numero_codigo += 1
-        codigo_equipo = codigo_equipo + str(numero_codigo)
+        if tipo == "Bocina":
+            codigo_equipo = codigo_equipo + str(numero_bocinas+1)
+        elif tipo == "Cámara":
+            codigo_equipo = codigo_equipo + str(numero_camaras+1)
+        elif tipo == "Computador portatil":
+            codigo_equipo = codigo_equipo + str(numero_portatiles+1)
+        elif tipo == "Proyector":
+            codigo_equipo = codigo_equipo + str(numero_proyectores+1)
         label_codigo.config(text=codigo_equipo)
     def guardar_eqipo():
-        global codigo_equipo
+        global codigo_equipo, numero_bocinas,numero_camaras,numero_proyectores,numero_portatiles
         if listbox_marca_equipo.get() != "":
             equip = Equipo(codigo_equipo, listbox_tipo.get(),listbox_marca_equipo.get(), True)
             inventario_equipos.append(equip)
@@ -74,18 +82,22 @@ def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
                 valores_actuales = list(comboCamara['values'])
                 valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
                 comboCamara['values'] = valores_actuales
+                numero_camaras+=1
             elif listbox_tipo.get() == "Computador portatil":
                 valores_actuales = list(comboCompu['values'])
                 valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
                 comboCompu['values'] = valores_actuales
+                numero_portatiles+=1
             elif listbox_tipo.get() == "Proyector":
                 valores_actuales = list(comboProyec['values'])
                 valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
                 comboProyec['values'] = valores_actuales
+                numero_proyectores+=1
             elif listbox_tipo.get() == "Bocina":
                 valores_actuales = list(comboBocina['values'])
                 valores_actuales.append(f"{codigo_equipo} | {listbox_marca_equipo.get()} | Disponible")
                 comboBocina['values'] = valores_actuales
+                numero_bocinas+=1
             messagebox.showinfo("Registro exitoso",f"El equipo se ha registrado correctamente.\nCódigo: {codigo_equipo}", parent = ventana_crear)
             ventana_crear.destroy()
         else:
@@ -431,6 +443,10 @@ def agregar_carrito(event):
                 break
             elif codigo == b.codigo and b.estado is False:
                 messagebox.showwarning("Error al agregar al carrito", "El equipo que intenta agregar al carrito ya se encuentra prestado.")
+                opciones_bocina.set('BOCINAS')
+                opciones_camara.set('CAMARA')
+                opciones_proyector.set('PROYECTOR')
+                opciones_portatil.set('PORTATIL')
 def confirmar_prestamo():
     if len(rentas_carrito) > 0:
         if entrada_nombre_prestamo.get() == "" or  entrada_carnet.get() == "":
