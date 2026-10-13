@@ -373,39 +373,40 @@ def eliminar_equipo():
                             text="Seleccione \nEquipo: ",
                             font=("Times New Roman", 12, "bold"),
                             )
-    label_equipo.place(x=35,  y=185)
+    label_equipo.place(x=35,  y=155)
 
     listbox_equipo = ttk.Combobox(ventana_eliminar,
                                   values=[],
                                   font=("Times New Roman", 13),
                                   state="readonly")
-    listbox_equipo.place(x=115, y=190, width=235, height=30)
-
-    boton_filtrar = tk.Button(ventana_eliminar,
-                              text="Filtrar",
-                              font=("Times New Roman", 15, "bold"), )
-    boton_filtrar.place(x=410, y=95, width=85, height=35)
+    listbox_equipo.place(x=115, y=155, width=235, height=30)
 
     boton_eliminar = tk.Button(ventana_eliminar,
                                text="Eliminar",
                                font=("Times New Roman", 15, "bold"),
                                command = eliminar_del_inventario)
-    boton_eliminar.place(x=410, y=200, width=85, height=35)
+    boton_eliminar.place(x=410, y=128, width=85, height=35)
 
     boton_buscar = tk.Button(ventana_eliminar,
                              text="Buscar",
                              font=("Times New Roman", 15, "bold"),
                              command = buscar_para_eliminar)
-    boton_buscar.place(x=410, y=315, width=85, height=35)
+    boton_buscar.place(x=410, y=240, width=85, height=35)
 
     label_busqueda = tk.Label(ventana_eliminar,
                               text="Buscar por Codigo: ",
                               font=("Times New Roman", 10, "bold"))
-    label_busqueda.place(x=50, y=325 )
+    label_busqueda.place(x=50, y=250 )
 
     entrada_busqueda = tk.Entry(ventana_eliminar,
                                 font=("Times New Roman", 10))
-    entrada_busqueda.place(x=165, y=325, width=150)
+    entrada_busqueda.place(x=165, y=250, width=150)
+
+    boton_cancelar = tk.Button(ventana_eliminar,
+                             text="Cancelar",
+                             font=("Times New Roman", 15, "bold"),
+                             command=ventana_eliminar.destroy)
+    boton_cancelar.place(x=250, y=330, width=85, height=35)
 
 def ver_inventario():
     posy = 70
@@ -474,6 +475,11 @@ def ver_inventario():
     if desplegado is False:
         messagebox.showwarning("No hay información", "Aún no se ha registrado ningún equipo de ningún tipo.", parent = ventana_inventario)
         ventana_inventario.destroy()
+    boton_cancelar = tk.Button(ventana_inventario,
+                               text="Cancelar",
+                               font=("Times New Roman", 15, "bold"),
+                               command=ventana_inventario.destroy)
+    boton_cancelar.place(x=300, y=posy+20, width=100, height=55)
 
 def ver_historial_prestamos():
     posy = 70
@@ -502,6 +508,11 @@ def ver_historial_prestamos():
                                   font=("arial", 12))
             label_info.place(x=80, y=posy)
             posy += 23
+        boton_cancelar = tk.Button(ventana_prestamos,
+                                   text="Cancelar",
+                                   font=("Times New Roman", 15, "bold"),
+                                   command=ventana_prestamos.destroy)
+        boton_cancelar.place(x=350, y=posy + 40, width=100, height=55)
     else:
         messagebox.showwarning("Sin información", "Aún no se ha rentado ningún equipo de ningún tipo.", parent = ventana_prestamos)
         ventana_prestamos.destroy()
