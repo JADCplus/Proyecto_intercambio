@@ -30,6 +30,10 @@ class Equipo:
 
 inventario_equipos = []
 codigo_equipo = "BC"
+rentas_carrito= []
+historial_rentas=[]
+actualmente_rentados=[]
+texto_carrito = ""
 
 def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
     global codigo_equipo
@@ -163,6 +167,33 @@ def crear_equipo(ventana, comboCamara, comboProyec, comboBocina, comboCompu):
     verificar_codigo(listbox_tipo.get())
 
 def devolver_equipo():
+    valores_inventario=[]
+    def al_seleccionar(event):
+        seleccion = listbox_tipo.get()
+        valores_inventario.clear()
+        for act in actualmente_rentados:
+            if act.tipo == seleccion and act.estado is False:
+                valores_inventario.append(f"{act.codigo} | {act.marca} | En uso")
+        listbox_equipo['values'] = valores_inventario
+        listbox_equipo.set("")
+    def confirmar_devolucion():
+        codigo = ""
+        contador = 0
+        equipo_seleccionado = listbox_equipo.get()
+        while contador < 5:
+            codigo = codigo + equipo_seleccionado[contador]
+            contador += 1
+        encontrado = False
+        for act in actualmente_rentados:
+            if codigo == act.codigo:
+                encontrado = True
+                actualmente_rentados.remove(act)
+                break
+        if encontrado:
+            for inven in inventario_equipos:
+                if codigo == inven.codigo:
+                    inven.estado = True
+            resetear_combos_principales()
 
     ventana_devolver = tk.Toplevel()
     ventana_devolver.geometry("550x400")
@@ -194,10 +225,11 @@ def devolver_equipo():
     label_titulo_codigo.place(x=50, y=125)
 
     listbox_tipo = ttk.Combobox(ventana_devolver,
-                                values=[],
+                                values=["Bocina", "Cámara", "Computador portatil", "Proyector"],
                                 font=("Times New Roman", 13),
                                 state="readonly")
     listbox_tipo.place(x=135, y=125, width=200, height=30)
+    listbox_tipo.bind("<<ComboboxSelected>>", al_seleccionar)
 
     label_equipo = tk.Label(ventana_devolver,
                             text="Equipo: ",
@@ -213,7 +245,8 @@ def devolver_equipo():
 
     boton_devolver = tk.Button(ventana_devolver,
                               text="Devolver",
-                              font=("Times New Roman", 15, "bold"),)
+                              font=("Times New Roman", 15, "bold"),
+                               command= confirmar_devolucion)
     boton_devolver.place(x=115, y=290,width=100, height=50)
 
     boton_limpiar_campos = tk.Button(ventana_devolver,
@@ -362,10 +395,6 @@ def login():
 
 #login()
 
-rentas_carrito= []
-historial_rentas=[]
-texto_carrito = ""
-
 def agregar_carrito(event):
     global texto_carrito
     combo_activo = event.widget
@@ -398,7 +427,6 @@ def agregar_carrito(event):
             elif codigo == b.codigo and b.estado is False:
                 messagebox.showwarning("Error al agregar al carrito", "El equipo que intenta agregar al carrito ya se encuentra prestado.")
 def confirmar_prestamo():
-    nuevos_valores = []
     if len(rentas_carrito) > 0:
         if entrada_nombre_prestamo.get() == "" or  entrada_carnet.get() == "":
             messagebox.showwarning("Falta información", "Asegurese de llenar todos los campos de información")
@@ -408,42 +436,46 @@ def confirmar_prestamo():
                     for r in rentas_carrito:
                         if r.codigo == i.codigo:
                             i.estado = False
-                nuevos_valores.clear()
-                for i in inventario_equipos:
-                    if i.tipo == "Bocina" and i.estado is False:
-                        nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | En uso")
-                    elif i.tipo == "Bocina" and i.estado is True:
-                        nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | Disponible")
-                opciones_bocina['values'] = nuevos_valores
-                nuevos_valores.clear()
-                for i in inventario_equipos:
-                    if i.tipo == "Cámara" and i.estado is False:
-                        nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | En uso")
-                    elif i.tipo == "Cámara" and i.estado is True:
-                        nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | Disponible")
-                opciones_camara['values'] = nuevos_valores
-                nuevos_valores.clear()
-                for i in inventario_equipos:
-                    if i.tipo == "Proyector" and i.estado is False:
-                        nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | En uso")
-                    elif i.tipo == "Proyector" and i.estado is True:
-                        nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | Disponible")
-                opciones_proyector['values'] = nuevos_valores
-                nuevos_valores.clear()
-                for i in inventario_equipos:
-                    if i.tipo == "Computador portatil" and i.estado is False:
-                        nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | En uso")
-                    elif i.tipo == "Computador portatil" and i.estado is True:
-                        nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | Disponible")
-                opciones_portatil['values'] = nuevos_valores
+                resetear_combos_principales()
                 messagebox.showinfo("Prestamo registrado", "Se realizó el registro del prestamo correctamente.")
                 for r in rentas_carrito:
                     historial_rentas.append(r)
+                    actualmente_rentados.append(r)
                 limpiar_prestamo()
             else:
                 messagebox.showwarning("Dato incompleto", "El carnet debe tener 8 caracteres.")
     else:
         messagebox.showwarning("Falta información", "No se ha agregado ningún elemento al carrito.")
+def resetear_combos_principales():
+    nuevos_valores = []
+    nuevos_valores.clear()
+    for i in inventario_equipos:
+        if i.tipo == "Bocina" and i.estado is False:
+            nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | En uso")
+        elif i.tipo == "Bocina" and i.estado is True:
+            nuevos_valores.append(f"{i.codigo} | Bocina {i.marca} | Disponible")
+    opciones_bocina['values'] = nuevos_valores
+    nuevos_valores.clear()
+    for i in inventario_equipos:
+        if i.tipo == "Cámara" and i.estado is False:
+            nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | En uso")
+        elif i.tipo == "Cámara" and i.estado is True:
+            nuevos_valores.append(f"{i.codigo} | Cámara {i.marca} | Disponible")
+    opciones_camara['values'] = nuevos_valores
+    nuevos_valores.clear()
+    for i in inventario_equipos:
+        if i.tipo == "Proyector" and i.estado is False:
+            nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | En uso")
+        elif i.tipo == "Proyector" and i.estado is True:
+            nuevos_valores.append(f"{i.codigo} | Proyector {i.marca} | Disponible")
+    opciones_proyector['values'] = nuevos_valores
+    nuevos_valores.clear()
+    for i in inventario_equipos:
+        if i.tipo == "Computador portatil" and i.estado is False:
+            nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | En uso")
+        elif i.tipo == "Computador portatil" and i.estado is True:
+            nuevos_valores.append(f"{i.codigo} | Portatil {i.marca} | Disponible")
+    opciones_portatil['values'] = nuevos_valores
 def limpiar_prestamo():
     global texto_carrito
     texto_carrito=""
