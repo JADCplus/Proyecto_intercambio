@@ -273,13 +273,43 @@ def devolver_equipo():
 
 
 def eliminar_equipo():
+    valores_inventario = []
+    def al_seleccionar(event):
+        seleccion = listbox_tipo.get()
+        valores_inventario.clear()
+        for i in inventario_equipos:
+            if i.tipo == seleccion:
+                if i.estado is False:
+                    valores_inventario.append(f"{i.codigo} | {i.marca} | En uso")
+                else:
+                    valores_inventario.append(f"{i.codigo} | {i.marca} | Disponible")
+        listbox_equipo['values'] = valores_inventario
+        listbox_equipo.set("")
+    def eliminar_del_inventario():
+        if entrada_busqueda.get() == "":
+            if listbox_equipo.get() != "":
+                pass
+            else:
+                messagebox.showwarning("Error al eliminar", "No se ha seleccionado el equipo que se desea eliminar.")
+        else:
+            encontrado = False
+            for inv in inventario_equipos:
+                if entrada_busqueda.get().upper() == inv.codigo:
+                    encontrado = True
+                    inventario_equipos.remove(inv)
+                    resetear_combos_principales()
+                    break
+            if encontrado:
+                messagebox.showinfo("Equipo eliminado", "El equipo se ha eliminado del inventario correctamente.")
+                ventana_eliminar.destroy()
+            else:
+                messagebox.showerror("Error al buscar código", "No se ha encontrado ningún equipo con ese código.")
     ventana_eliminar = tk.Toplevel()
     ventana_eliminar.geometry("550x400")
     ventana_eliminar.resizable(False, False)
     ventana_eliminar.title("Eliminar Equipo")
     ventana_eliminar.transient(ventana_principal)
     ventana_eliminar.grab_set()
-
     try:
         icono_eliminar = tk.PhotoImage(file="icono_eliminar.png")
         ventana_eliminar.iconphoto(False, icono_eliminar)
@@ -302,10 +332,11 @@ def eliminar_equipo():
 
 
     listbox_tipo = ttk.Combobox(ventana_eliminar,
-                                values=[],
+                                values=["Bocina", "Cámara", "Computador portatil", "Proyector"],
                                 font=("Times New Roman", 13),
                                 state="readonly")
     listbox_tipo.place(x=115, y=100, width=235, height=30)
+    listbox_tipo.bind("<<ComboboxSelected>>", al_seleccionar)
 
     label_equipo = tk.Label(ventana_eliminar,
                             text="Seleccione \nEquipo: ",
@@ -326,7 +357,8 @@ def eliminar_equipo():
 
     boton_eliminar = tk.Button(ventana_eliminar,
                                text="Eliminar",
-                               font=("Times New Roman", 15, "bold"), )
+                               font=("Times New Roman", 15, "bold"),
+                               command = eliminar_del_inventario)
     boton_eliminar.place(x=410, y=200, width=85, height=35)
 
     boton_buscar = tk.Button(ventana_eliminar,
