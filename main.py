@@ -822,21 +822,11 @@ if confirmacion:
                                     text="Fecha de prestamo",
                                     font=("Times New Roman", 14, " bold"),
                                     )
-    label_fecha_prestamo.place(x=80, y=460)
+    label_fecha_prestamo.place(x=270, y=460)
 
     label_fecha_hoy = tk.Label(ventana_principal,
                                text = date.today().strftime("%d/%m/%Y"),
                                       font=("Times New Roman", 13))
-    label_fecha_hoy.place(x=65, y=490, width=200, height=35)
-
-    label_fecha_devolucion = tk.Label(ventana_principal,
-                                      text="Fecha de Devolucion",
-                                      font=("Times New Roman", 14, " bold"),
-                                    )
-    label_fecha_devolucion.place(x=450, y=460)
-
-    entrada_fecha_devolucion = tk.Entry(ventana_principal,
-                                        font=("Times New Roman", 13))
-    entrada_fecha_devolucion.place(x=435, y=490, width=200, height=35)
+    label_fecha_hoy.place(x=250, y=490, width=200, height=35)
 
     ventana_principal.mainloop()
