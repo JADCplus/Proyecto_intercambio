@@ -427,29 +427,37 @@ def ver_inventario():
     label_inventario = tk.Label(ventana_inventario,text="Inventario",font=("Times New Roman", 25))
     label_inventario.place(x=300, y=30)
     contador = 0
+    desplegado = False
     for inven in inventario_equipos:
         if inven.tipo == "Proyector":
             contador += 1
     if contador>0:
         desplegar("Proyector")
+        desplegado = True
     contador = 0
     for inven in inventario_equipos:
         if inven.tipo == "Bocina":
             contador += 1
     if contador>0:
         desplegar("Bocina")
+        desplegado = True
     contador = 0
     for inven in inventario_equipos:
         if inven.tipo == "Cámara":
             contador += 1
     if contador>0:
         desplegar("Cámara")
+        desplegado = True
     contador = 0
     for inven in inventario_equipos:
         if inven.tipo == "Computador portatil":
             contador += 1
     if contador>0:
         desplegar("Computador portatil")
+        desplegado = True
+    if desplegado is False:
+        messagebox.showwarning("No hay información", "Aún no se ha registrado ningún equipo de ningún tipo.", parent = ventana_inventario)
+        ventana_inventario.destroy()
 
 def login():
     global confirmacion
