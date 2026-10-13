@@ -27,7 +27,24 @@ class Equipo:
     @estado.setter
     def estado(self, estado):
         self.__estado = estado
-
+class Historial:
+    def __init__(self, equipo, usuario,tipo_usuario, fecha):
+        self.__equipo = equipo
+        self.__usuario = usuario
+        self.__tipo_usuario = tipo_usuario
+        self.__fecha = fecha
+    @property
+    def equipo(self):
+        return self.__equipo
+    @property
+    def usuario(self):
+        return self.__usuario
+    @property
+    def tipo_usuario(self):
+        return self.__tipo_usuario
+    @property
+    def fecha(self):
+        return self.__fecha
 inventario_equipos = []
 codigo_equipo = "BC"
 rentas_carrito= []
@@ -391,7 +408,6 @@ def eliminar_equipo():
     entrada_busqueda.place(x=165, y=325, width=150)
 
 def ver_inventario():
-    global numero_bocinas,numero_camaras,numero_proyectores,numero_portatiles
     posy = 70
     def desplegar(tipo):
         nonlocal posy
@@ -458,6 +474,37 @@ def ver_inventario():
     if desplegado is False:
         messagebox.showwarning("No hay información", "Aún no se ha registrado ningún equipo de ningún tipo.", parent = ventana_inventario)
         ventana_inventario.destroy()
+
+def ver_historial_prestamos():
+    posy = 70
+
+    ventana_prestamos = tk.Toplevel()
+    ventana_prestamos.geometry("850x750")
+    ventana_prestamos.resizable(False, False)
+    ventana_prestamos.title("Historial de prestamos")
+    ventana_prestamos.transient(ventana_principal)
+    ventana_prestamos.grab_set()
+
+    label_inventario = tk.Label(ventana_prestamos, text="Historial de prestamos", font=("Times New Roman", 25))
+    label_inventario.place(x=250, y=30)
+
+    if len(historial_rentas)>0:
+        texto_margen = "╔═════════════════════════════════════════════════╗\n"
+        for hist in historial_rentas:
+            texto_margen += "║                                                                                                                   ║\n"
+        texto_margen += "╚═════════════════════════════════════════════════╝\n"
+        label_margen = tk.Label(ventana_prestamos, text=texto_margen, font=("arial", 15))
+        label_margen.place(x=35, y=posy)
+        posy += 25
+        for hist in reversed(historial_rentas):
+            label_info = tk.Label(ventana_prestamos,
+                                  text=f"{hist.equipo.codigo}   |   {hist.equipo.tipo} {hist.equipo.marca}   |   {hist.usuario}   |   {hist.tipo_usuario}   |   {hist.fecha}",
+                                  font=("arial", 12))
+            label_info.place(x=80, y=posy)
+            posy += 23
+    else:
+        messagebox.showwarning("Sin información", "Aún no se ha rentado ningún equipo de ningún tipo.", parent = ventana_prestamos)
+        ventana_prestamos.destroy()
 
 def login():
     global confirmacion
@@ -574,7 +621,8 @@ def confirmar_prestamo():
                 resetear_combos_principales()
                 messagebox.showinfo("Prestamo registrado", "Se realizó el registro del prestamo correctamente.")
                 for r in rentas_carrito:
-                    historial_rentas.append(r)
+                    h = Historial(r,entrada_nombre_prestamo.get(), combo_tipo.get(), date.today().strftime("%d/%m/%Y"))
+                    historial_rentas.append(h)
                     actualmente_rentados.append(r)
                 limpiar_prestamo()
             else:
@@ -650,7 +698,7 @@ if confirmacion:
     menu_opciones_inventario = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Inventario", menu=menu_opciones_inventario)
     menu_opciones_inventario.add_command(label="Ver Inventario", command = ver_inventario)
-    menu_opciones_inventario.add_command(label="Historial Prestamos")
+    menu_opciones_inventario.add_command(label="Historial Prestamos", command = ver_historial_prestamos)
 
     menu_ayuda = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
