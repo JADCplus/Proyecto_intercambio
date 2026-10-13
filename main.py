@@ -207,10 +207,10 @@ def devolver_equipo():
                     if codigo == inven.codigo:
                         inven.estado = True
                 resetear_combos_principales()
-                messagebox.showinfo("Devolución registrada", "Se ha registrado la devolución del equipo.")
+                messagebox.showinfo("Devolución registrada", "Se ha registrado la devolución del equipo.", parent = ventana_devolver)
                 ventana_devolver.destroy()
         else:
-            messagebox.showwarning("Error al devolver", "No se ha seleccionado ningún equipo para devolver.")
+            messagebox.showwarning("Error al devolver", "No se ha seleccionado ningún equipo para devolver.", parent = ventana_devolver)
 
     ventana_devolver = tk.Toplevel()
     ventana_devolver.geometry("550x400")
@@ -286,35 +286,39 @@ def eliminar_equipo():
         listbox_equipo['values'] = valores_inventario
         listbox_equipo.set("")
     def eliminar_del_inventario():
-        if entrada_busqueda.get() == "":
-            if listbox_equipo.get() != "":
-                codigo = ""
-                contador = 0
-                equipo_seleccionado = listbox_equipo.get()
-                while contador < 5:
-                    codigo = codigo + equipo_seleccionado[contador]
-                    contador += 1
-                for inv in inventario_equipos:
-                    if codigo == inv.codigo:
-                        inventario_equipos.remove(inv)
-                        messagebox.showinfo("Equipo eliminado","El equipo se ha eliminado del inventario correctamente.")
-                        ventana_eliminar.destroy()
-                        break
-            else:
-                messagebox.showwarning("Error al eliminar", "No se ha seleccionado el equipo que se desea eliminar.")
+        if listbox_equipo.get() != "":
+            codigo = ""
+            contador = 0
+            equipo_seleccionado = listbox_equipo.get()
+            while contador < 5:
+                codigo = codigo + equipo_seleccionado[contador]
+                contador += 1
+            for inv in inventario_equipos:
+                if codigo == inv.codigo:
+                    inventario_equipos.remove(inv)
+                    messagebox.showinfo("Equipo eliminado","El equipo se ha eliminado del inventario correctamente.", parent = ventana_eliminar)
+                    ventana_eliminar.destroy()
+                    break
         else:
+            messagebox.showwarning("Error al eliminar", "No se ha seleccionado el equipo que se desea eliminar.", parent = ventana_eliminar)
+        resetear_combos_principales()
+        limpiar_prestamo()
+    def buscar_para_eliminar():
+        if entrada_busqueda.get() != "":
             encontrado = False
             for inv in inventario_equipos:
                 if entrada_busqueda.get().upper() == inv.codigo:
                     encontrado = True
-                    inventario_equipos.remove(inv)
+                    listbox_tipo.set(inv.tipo)
+                    if inv.estado is False:
+                        listbox_equipo.set(f"{inv.codigo} | {inv.marca} | En uso")
+                    else:
+                        listbox_equipo.set(f"{inv.codigo} | {inv.marca} | Disponible")
                     break
-            if encontrado:
-                messagebox.showinfo("Equipo eliminado", "El equipo se ha eliminado del inventario correctamente.")
-                ventana_eliminar.destroy()
-            else:
-                messagebox.showerror("Error al buscar código", "No se ha encontrado ningún equipo con ese código.")
-        resetear_combos_principales()
+            if encontrado is False:
+                messagebox.showerror("Error al buscar código", "No se ha encontrado ningún equipo con ese código.",parent=ventana_eliminar)
+        else:
+            messagebox.showwarning("Error al buscar", "No se ha ingresado ningún código para buscar.", parent = ventana_eliminar)
     ventana_eliminar = tk.Toplevel()
     ventana_eliminar.geometry("550x400")
     ventana_eliminar.resizable(False, False)
@@ -374,9 +378,9 @@ def eliminar_equipo():
 
     boton_buscar = tk.Button(ventana_eliminar,
                              text="Buscar",
-                             font=("Times New Roman", 15, "bold") )
+                             font=("Times New Roman", 15, "bold"),
+                             command = buscar_para_eliminar)
     boton_buscar.place(x=410, y=315, width=85, height=35)
-
 
     label_busqueda = tk.Label(ventana_eliminar,
                               text="Buscar por Codigo: ",
