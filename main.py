@@ -685,6 +685,60 @@ def limpiar_prestamo():
 def solo_numeros(texto_nuevo):
   return texto_nuevo == "" or texto_nuevo.isdigit()
 
+def creditos():
+
+    ventana_creditos = tk.Toplevel()
+    ventana_creditos.title("Creditos")
+    ventana_creditos.resizable(False, False)
+    ventana_creditos.geometry("500x300")
+    ventana_creditos.configure(bg="#0D0D14")
+
+    def cerrar_programa():
+        ventana_creditos.destroy()
+        ventana_principal.destroy()
+
+    try:
+        icono_creditos = tk.PhotoImage(file="icono_creditos.png")
+        ventana_creditos.iconphoto(False, icono_creditos)
+        ventana_creditos.icono = icono_creditos
+    except tk.TclError:
+        pass  # si no existe el icono, sigue sin él
+
+    label_titulo_creditos = tk.Label(ventana_creditos,
+                                     text="Programa Hecho Por: ",
+                                     font=("Times New Roman", 20, "bold"),
+                                     bg="#0D0D14",
+                                     fg="#EBE8E8"
+                                     )
+    label_titulo_creditos.place(x=120,y=30)
+
+    label_nombres_axl = tk.Label(ventana_creditos,
+                                     text="Axl Javier Oswaldo Gomez Ramirez - 2501002010",
+                                     font=("Times New Roman", 15, "bold"),
+                                     bg="#0D0D14",
+                                     fg="#EBE8E8"
+                                          )
+    label_nombres_axl.place(x=50,y=90)
+
+    label_nombre_julian = tk.Label(ventana_creditos,
+                                   text="Julian Antonio de Leon Castillo - 2401002017 ",
+                                   font=("Times New Roman", 15, "bold"),
+                                   bg="#0D0D14",
+                                   fg="#EBE8E8"
+                                   )
+    label_nombre_julian.place(x=50,y=130)
+
+    boton_cerrar_programa = tk.Button(ventana_creditos,
+                                      text="CERRAR PROGRAMA",
+                                      font=("Times New Roman", 11, "bold"),
+                                      bg="#EBE8E8",
+                                      fg="#0D0D14",
+                                      command=cerrar_programa,
+
+                                      )
+    boton_cerrar_programa.place(x=160,y=200, width=175, height=50)
+
+
 if confirmacion:
     ventana_principal = tk.Tk()
     ventana_principal.title("Ventana Principal")
@@ -713,6 +767,8 @@ if confirmacion:
 
     menu_ayuda = tk.Menu(barra_principal)
     barra_principal.add_cascade(label="Ayuda", menu=menu_ayuda)
+
+    menu_ayuda.add_command(label="Creditos",command=creditos)
 
     label_bienvenido = tk.Label(ventana_principal,
                                 text="¡Bienvenido!",
